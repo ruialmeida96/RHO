@@ -1,10 +1,10 @@
 package challenge.RHO.Controller;
 
-import challenge.RHO.Model.Sensor;
-import challenge.RHO.Model.SensorData;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import challenge.RHO.Model.Sensor;
+import challenge.RHO.Model.SensorData;
 
 import java.util.ArrayList;
 import java.util.Date;
