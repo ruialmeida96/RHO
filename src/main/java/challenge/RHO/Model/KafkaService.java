@@ -1,5 +1,10 @@
 package challenge.RHO.Model;
 
+import challenge.RHO.RhoApplication;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+
+import java.util.Properties;
+
 public class KafkaService {
 
     /*@KafkaListener(topics = "teste",groupId = "id", containerFactory= "studentListner")

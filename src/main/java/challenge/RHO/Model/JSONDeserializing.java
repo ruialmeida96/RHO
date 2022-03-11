@@ -6,17 +6,19 @@ import org.apache.kafka.common.serialization.Deserializer;
 
 import java.util.Map;
 
-public class KafkaJsonDeserializer <T> implements Deserializer {
+public class JSONDeserializing<T> implements Deserializer {
     private Class <T> type;
 
-    public KafkaJsonDeserializer(Class type) {
+    /*public JSONDeserializing(Class type) {
+        this.type = type;
+    }*/
+
+    public JSONDeserializing(Class<T> type) {
         this.type = type;
     }
 
     @Override
-    public void configure(Map map, boolean b) {
-
-    }
+    public void configure(Map map, boolean b) {    }
 
     @Override
     public Object deserialize(String s, byte[] bytes) {
