@@ -1,33 +1,56 @@
 package challenge.RHO.Model;
 
 
-import java.util.Date;
+import java.sql.Date;
+import java.sql.Time;
 
 public class SensorData {
     private int id;
+    private int id_sensor;
     private double valor;
-    private Date regitst_time;
+    private Date regist_date;
+    private Time regist_time;
 
-    public SensorData(){}
-
-    public SensorData(double valor, Date regitst_time) {
-        this.valor = valor;
-        this.regitst_time = regitst_time;
+    public SensorData() {
     }
 
-    public SensorData(int id, double valor, Date regitst_time) {
+    public SensorData(int id_sensor, double valor, Date regist_date,Time regist_time) {
+        this.id_sensor = id_sensor;
+        this.valor = valor;
+        this.regist_date = regist_date;
+        this.regist_time = regist_time;
+    }
+
+    public SensorData(int id, int id_sensor, double valor, Date regist_date,Time regist_time) {
         this.id = id;
+        this.id_sensor = id_sensor;
         this.valor = valor;
-        this.regitst_time = regitst_time;
+        this.regist_date = regist_date;
+        this.regist_time = regist_time;
     }
 
-    @Override
-    public String toString() {
-        return "SensorData{" +
-                "id=" + id +
-                ", valor=" + valor +
-                ", regitst_time=" + regitst_time +
-                '}';
+    public Date getRegist_date() {
+        return regist_date;
+    }
+
+    public void setRegist_date(Date regist_date) {
+        this.regist_date = regist_date;
+    }
+
+    public Time getRegist_time() {
+        return regist_time;
+    }
+
+    public void setRegist_time(Time regist_time) {
+        this.regist_time = regist_time;
+    }
+
+    public int getId_sensor() {
+        return id_sensor;
+    }
+
+    public void setId_sensor(int id_sensor) {
+        this.id_sensor = id_sensor;
     }
 
     public int getId() {
@@ -46,11 +69,14 @@ public class SensorData {
         this.valor = valor;
     }
 
-    public Date getRegitst_time() {
-        return regitst_time;
-    }
-
-    public void setRegitst_time(Date regitst_time) {
-        this.regitst_time = regitst_time;
+    @Override
+    public String toString() {
+        return "SensorData{" +
+                "id=" + id +
+                ", id_sensor=" + id_sensor +
+                ", valor=" + valor +
+                ", regist_date=" + regist_date +
+                ", regist_time=" + regist_time +
+                '}';
     }
 }

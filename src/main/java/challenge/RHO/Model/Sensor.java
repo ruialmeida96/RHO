@@ -1,25 +1,41 @@
 package challenge.RHO.Model;
 
 import java.awt.*;
+import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.Vector;
 
 public class Sensor {
     private int id;
     private String name;
-    private Date install_date_time;
+    private Date install_date;
+    private Time install_time;
     private double latitude;
     private double longitude;
     private double min;
     private double max;
     private ArrayList<SensorData> dados;
 
-    public Sensor(int id, String name, Date install_date_time, double latitude, double longitude, double min,double max, ArrayList<SensorData> dados) {
+    public Sensor(){}
+
+    public Sensor(int id, String name, Date install_date,Time install_time, double latitude, double longitude, double min,double max, ArrayList<SensorData> dados) {
         this.id = id;
         this.name = name;
-        this.install_date_time = install_date_time;
+        this.install_date = install_date;
+        this.install_time = install_time;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.max = max;
+        this.min = min;
+        this.dados = dados;
+    }
+
+    public Sensor(String name, Date install_date,Time install_time, double latitude, double longitude, double min,double max, ArrayList<SensorData> dados) {
+        this.name = name;
+        this.install_date = install_date;
+        this.install_time = install_time;
         this.latitude = latitude;
         this.longitude = longitude;
         this.max = max;
@@ -32,13 +48,30 @@ public class Sensor {
         return "Sensor{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", install_date_time=" + install_date_time +
+                ", install_date=" + install_date +
+                ", install_time=" + install_time +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
-                ", max=" + max +
                 ", min=" + min +
+                ", max=" + max +
                 ", dados=" + dados +
                 '}';
+    }
+
+    public Date getInstall_date() {
+        return install_date;
+    }
+
+    public void setInstall_date(Date install_date) {
+        this.install_date = install_date;
+    }
+
+    public Time getInstall_time() {
+        return install_time;
+    }
+
+    public void setInstall_time(Time install_time) {
+        this.install_time = install_time;
     }
 
     public long getId() {
@@ -55,14 +88,6 @@ public class Sensor {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Date getInstall_date_time() {
-        return install_date_time;
-    }
-
-    public void setInstall_date_time(Date install_date_time) {
-        this.install_date_time = install_date_time;
     }
 
     public double getLatitude() {
