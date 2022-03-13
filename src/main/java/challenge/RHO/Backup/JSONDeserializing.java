@@ -1,4 +1,4 @@
-package challenge.RHO.Model;
+package challenge.RHO.Backup;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.errors.SerializationException;
@@ -23,13 +23,11 @@ public class JSONDeserializing<T> implements Deserializer {
     @Override
     public Object deserialize(String s, byte[] bytes) {
         ObjectMapper mapper = new ObjectMapper();
-        T obj = null;
         try {
-            obj = mapper.readValue(bytes, type);
+            return mapper.readValue(bytes, type);
         } catch (Exception e) {
             throw new SerializationException("Error deserialization JSON message",e);
         }
-        return obj;
     }
 
     @Override

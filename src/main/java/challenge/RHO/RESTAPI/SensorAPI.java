@@ -1,4 +1,4 @@
-package challenge.RHO.Controller;
+package challenge.RHO.RESTAPI;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,18 +11,18 @@ import java.util.Date;
 import java.util.Vector;
 
 @RestController
-public class SensorController {
+public class SensorAPI {
 
     ArrayList<Sensor> array_sensores = new ArrayList<>();
 
-    SensorController(){
-        Vector<SensorData> vetorteste = new Vector<SensorData>();
+    SensorAPI(){
+        ArrayList<SensorData> vetorteste = new ArrayList<SensorData>();
         vetorteste.add(new SensorData(1,2.222222,new Date(System.currentTimeMillis())));
         vetorteste.add(new SensorData(2,333.332,new Date(System.currentTimeMillis())));
         vetorteste.add(new SensorData(3,4.222222,new Date(System.currentTimeMillis())));
         vetorteste.add(new SensorData(4,5.222222,new Date(System.currentTimeMillis())));
 
-        Vector<SensorData> vetorteste1 = new Vector<SensorData>();
+        ArrayList<SensorData> vetorteste1 = new ArrayList<SensorData>();
         vetorteste1.add(new SensorData(1,2.222222,new Date(System.currentTimeMillis())));
         vetorteste1.add(new SensorData(2,333.332,new Date(System.currentTimeMillis())));
         vetorteste1.add(new SensorData(3,4.222222,new Date(System.currentTimeMillis())));
@@ -67,7 +67,8 @@ public class SensorController {
         if (id >0){
             for (Sensor _sensor : array_sensores){
                 if(_sensor.getId() == id)
-                    return "Sensor id:"+_sensor.getId()+" | Latest Temperature:"+_sensor.getDados().lastElement().getValor()+" | Min. Temp.:"+_sensor.getMin()+" | Max. Temp.:"+_sensor.getMax();
+                    return "";
+                    //return "Sensor id:"+_sensor.getId()+" | Latest Temperature:"+_sensor.getDados().lastElement().getValor()+" | Min. Temp.:"+_sensor.getMin()+" | Max. Temp.:"+_sensor.getMax();
             }
         }
         return "No Available Data";

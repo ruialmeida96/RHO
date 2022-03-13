@@ -1,21 +1,22 @@
 package challenge.RHO.Model;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
 public class Sensor {
-    private long id;
+    private int id;
     private String name;
     private Date install_date_time;
     private double latitude;
     private double longitude;
     private double min;
     private double max;
-    private Vector<SensorData> dados;
+    private ArrayList<SensorData> dados;
 
-    public Sensor(long id, String name, Date install_date_time, double latitude, double longitude, double min,double max, Vector<SensorData> dados) {
+    public Sensor(int id, String name, Date install_date_time, double latitude, double longitude, double min,double max, ArrayList<SensorData> dados) {
         this.id = id;
         this.name = name;
         this.install_date_time = install_date_time;
@@ -44,7 +45,7 @@ public class Sensor {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -96,11 +97,11 @@ public class Sensor {
         this.min = min;
     }
 
-    public Vector<SensorData> getDados() {
+    public ArrayList<SensorData> getDados() {
         return dados;
     }
 
-    public void setDados(Vector<SensorData> dados) {
+    public void setDados(ArrayList<SensorData> dados) {
         this.dados = dados;
     }
 }

@@ -1,5 +1,6 @@
 package challenge.RHO.Model;
 
+
 import java.util.Date;
 
 public class SensorData {
@@ -7,10 +8,26 @@ public class SensorData {
     private double valor;
     private Date regitst_time;
 
+    public SensorData(){}
+
+    public SensorData(double valor, Date regitst_time) {
+        this.valor = valor;
+        this.regitst_time = regitst_time;
+    }
+
     public SensorData(int id, double valor, Date regitst_time) {
         this.id = id;
         this.valor = valor;
         this.regitst_time = regitst_time;
+    }
+
+    @Override
+    public String toString() {
+        return "SensorData{" +
+                "id=" + id +
+                ", valor=" + valor +
+                ", regitst_time=" + regitst_time +
+                '}';
     }
 
     public int getId() {
