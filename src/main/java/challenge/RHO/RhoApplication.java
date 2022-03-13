@@ -53,8 +53,13 @@ public class RhoApplication {
         //INSERIR DADOS DE SENSORES POR DEFEITO CASO NAO TENHA VALORES NOS SENSORES (criamos pelomenos 3 sensores)
         if (total_sensors == 0){
             for (int i = 1; i<=3;i++){
-                dbConnector.insereSensor(new Sensor("Sensor "+i, Utils.return_current_date(),Utils.return_current_time(),40.714+i,-74.006+i,0,0,null));
+                Sensor insere_sensor = new Sensor("Sensor "+i, Utils.return_current_date(),Utils.return_current_time(),40.714+i,-74.006+i,0,0,null);
+                dbConnector.insereSensor(insere_sensor);
+                lista_sensores.add(insere_sensor);
             }
+        }else{
+            //carregar os valores da BD
+            lista_sensores = dbConnector.selectallSensors();
         }
 
         //aqui vai criar a lista de sensores (ir buscar à BD)

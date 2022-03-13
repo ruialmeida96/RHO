@@ -18,9 +18,10 @@ public class Sensor {
     private double max;
     private ArrayList<SensorData> dados;
 
-    public Sensor(){}
+    public Sensor() {
+    }
 
-    public Sensor(int id, String name, Date install_date,Time install_time, double latitude, double longitude, double min,double max, ArrayList<SensorData> dados) {
+    public Sensor(int id, String name, Date install_date, Time install_time, double latitude, double longitude, double min, double max, ArrayList<SensorData> dados) {
         this.id = id;
         this.name = name;
         this.install_date = install_date;
@@ -32,7 +33,7 @@ public class Sensor {
         this.dados = dados;
     }
 
-    public Sensor(String name, Date install_date,Time install_time, double latitude, double longitude, double min,double max, ArrayList<SensorData> dados) {
+    public Sensor(String name, Date install_date, Time install_time, double latitude, double longitude, double min, double max, ArrayList<SensorData> dados) {
         this.name = name;
         this.install_date = install_date;
         this.install_time = install_time;
@@ -74,7 +75,7 @@ public class Sensor {
         this.install_time = install_time;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

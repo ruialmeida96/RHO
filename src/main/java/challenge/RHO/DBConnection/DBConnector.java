@@ -15,13 +15,13 @@ public class DBConnector {
     private String password;
     //private String dbDriver = "com.mysql.jdbc.Driver";
 
-    private Connection conn = null;
+    private static Connection conn = null;
     private StringBuffer sqlQuery = null;
     private StringBuffer sqlQuery1 = null;
     private Statement st = null;
-    private ResultSet rs = null;
+    private static ResultSet rs = null;
 
-    private boolean connected;
+    private static boolean connected;
 
     public DBConnector(String aHost, String aUser, String aPass) {
         dbUrl = aHost;
@@ -76,7 +76,7 @@ public class DBConnector {
         }
     }
 
-    public boolean isConnected() {
+    public static boolean isConnected() {
         return connected;
     }
 
@@ -166,6 +166,44 @@ public class DBConnector {
         }
     }
 
+    public ArrayList<Sensor> selectallSensors() {
+        if (isConnected()) {
+            ArrayList<Sensor> arraySensors = new ArrayList<>();
+
+            String query = "SELECT * FROM sensor;";
+
+            try {
+                rs = null;
+
+                PreparedStatement statement = conn.prepareStatement(query);
+
+                rs = statement.executeQuery();
+
+                while (rs.next()) {
+                    Sensor sensor_return = new Sensor();
+                    sensor_return.setId(rs.getInt("id"));
+                    sensor_return.setName(rs.getString("name"));
+                    sensor_return.setInstall_date(rs.getDate("install_date"));
+                    sensor_return.setInstall_time(rs.getTime("install_time"));
+                    sensor_return.setLatitude(rs.getDouble("latitude"));
+                    sensor_return.setLongitude(rs.getDouble("longitude"));
+                    sensor_return.setMax(rs.getDouble("max"));
+                    sensor_return.setMin(rs.getDouble("min"));
+                    sensor_return.setDados(null);
+
+                    arraySensors.add(sensor_return);
+                }
+                return arraySensors;
+            } catch (SQLException e) {
+                System.out.println("!! SQL Exception !!\n" + e);
+                return null;
+            }
+        } else {
+            System.out.println("!! Database not initialised !!\nUnable to select new employer.");
+            return null;
+        }
+    }
+
     public int selectCountSensors() {
         if (isConnected()) {
 
@@ -190,7 +228,7 @@ public class DBConnector {
         }
     }
 
-    public ArrayList<SensorData> selectallSensorData(int id_sensor) {
+    public static ArrayList<SensorData> selectallSensorData(int id_sensor) {
         if (isConnected()) {
             ArrayList<SensorData> arrayListreturn = new ArrayList<>();
             String query = "SELECT * FROM sensordata WHERE id_sensor = ? ORDER BY id ASC;";
