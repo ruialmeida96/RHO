@@ -65,7 +65,7 @@ public class RhoApplication {
         //aqui vai criar a lista de sensores (ir buscar à BD)
         //lista_sensores.add(new Sensor(1,"Sensor 1",new Date(System.currentTimeMillis()),2.222,1.1111,0,0,null));
 
-        /*KafkaConsumer<String,SensorData> consumer = new KafkaConsumer<String, SensorData>(props);
+        KafkaConsumer<String,SensorData> consumer = new KafkaConsumer<String, SensorData>(props);
         consumer.subscribe(Arrays.asList("testeSensorData"));
         ObjectMapper mapper = new ObjectMapper();
 
@@ -74,7 +74,9 @@ public class RhoApplication {
             while (true) {
                 ConsumerRecords<String, SensorData> records = consumer.poll(Duration.ofMillis(100));
                 for (ConsumerRecord<String, SensorData> record : records) {
-
+                    //int record_key = Integer.parseInt(record.key());
+                    SensorData dados_sensor = record.value();
+                    dbConnector.insereSensorData(dados_sensor);
                 }
             }
         }catch(WakeupException ex){
@@ -82,6 +84,6 @@ public class RhoApplication {
         } finally{
             consumer.close();
             System.out.println("After closing KafkaConsumer");
-        }*/
+        }
     }
 }

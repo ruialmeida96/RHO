@@ -39,7 +39,6 @@ public class SensorAPI {
         return array_sensores;
     }*/
 
-
     /*@GetMapping("/sensor")
     public Sensor return_sensor_by_id(@RequestParam(name = "id") int id){
         if (id >0){
