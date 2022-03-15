@@ -170,7 +170,7 @@ public class DBConnector {
         if (isConnected()) {
             ArrayList<Sensor> arraySensors = new ArrayList<>();
 
-            String query = "SELECT * FROM sensor;";
+            String query = "SELECT * FROM sensor ORDER BY id ASC;";
 
             try {
                 rs = null;
@@ -261,7 +261,7 @@ public class DBConnector {
     }
 
 
-    public boolean updateMaxMinOnSesor(int id_sensor, double novo_valor_sensor, boolean is_max) {
+    public void updateMaxMinOnSesor(int id_sensor, double novo_valor_sensor, boolean is_max) {
         //aqui o is_max == true indica que é para atualizar o Max. caso contrário o MIN
         if (isConnected()) {
             String query = null;
@@ -276,17 +276,12 @@ public class DBConnector {
                 statement.setDouble(1, novo_valor_sensor);
                 statement.setInt(2, id_sensor);
 
-                total_rows = statement.executeUpdate();
-                if (total_rows > 0)
-                    return true;
-                return false;
+                statement.executeUpdate();
             } catch (SQLException e) {
                 System.out.println("!! SQL Exception !!\n" + e);
-                return false;
             }
         } else {
             System.out.println("!! Database not initialised !!\nUnable to select new employer.");
-            return false;
         }
     }
 

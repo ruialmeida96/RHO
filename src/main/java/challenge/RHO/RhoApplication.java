@@ -34,7 +34,7 @@ public class RhoApplication {
 
         SpringApplication.run(RhoApplication.class, args);
 
-        dbConnector =  new DBConnector("jdbc:mysql://localhost:3306/sys","root","root");
+        dbConnector = new DBConnector("jdbc:mysql://localhost:3306/sys", "root", "root");
 
         dbConnector.ConnectDataBase();
         boolean con = dbConnector.isConnected();
@@ -44,20 +44,20 @@ public class RhoApplication {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JSONDeserializerTest.class);
-        props.put(JSONDeserializerTest.VALUE_CLASS_NAME_CONFIG,SensorData.class);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG,"SensorDataConsumerGroup");
+        props.put(JSONDeserializerTest.VALUE_CLASS_NAME_CONFIG, SensorData.class);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "SensorDataConsumerGroup");
         //props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest");
 
 
         int total_sensors = dbConnector.selectCountSensors();
         //INSERIR DADOS DE SENSORES POR DEFEITO CASO NAO TENHA VALORES NOS SENSORES (criamos pelomenos 3 sensores)
-        if (total_sensors == 0){
-            for (int i = 1; i<=3;i++){
-                Sensor insere_sensor = new Sensor("Sensor "+i, Utils.return_current_date(),Utils.return_current_time(),40.714+i,-74.006+i,0,0,null);
+        if (total_sensors == 0) {
+            for (int i = 1; i <= 3; i++) {
+                Sensor insere_sensor = new Sensor("Sensor " + i, Utils.return_current_date(), Utils.return_current_time(), 40.714 + i, -74.006 + i, 0, 0, null);
                 dbConnector.insereSensor(insere_sensor);
                 lista_sensores.add(insere_sensor);
             }
-        }else{
+        } else {
             //carregar os valores da BD
             lista_sensores = dbConnector.selectallSensors();
         }
@@ -65,7 +65,7 @@ public class RhoApplication {
         //aqui vai criar a lista de sensores (ir buscar à BD)
         //lista_sensores.add(new Sensor(1,"Sensor 1",new Date(System.currentTimeMillis()),2.222,1.1111,0,0,null));
 
-        KafkaConsumer<String,SensorData> consumer = new KafkaConsumer<String, SensorData>(props);
+        KafkaConsumer<String, SensorData> consumer = new KafkaConsumer<String, SensorData>(props);
         consumer.subscribe(Arrays.asList("testeSensorData"));
         ObjectMapper mapper = new ObjectMapper();
 
@@ -76,12 +76,26 @@ public class RhoApplication {
                 for (ConsumerRecord<String, SensorData> record : records) {
                     //int record_key = Integer.parseInt(record.key());
                     SensorData dados_sensor = record.value();
+
+                    if (lista_sensores.get(dados_sensor.getId_sensor() - 1).getId() == dados_sensor.getId_sensor()) {
+                        if (lista_sensores.get(dados_sensor.getId_sensor() - 1).getMax() < dados_sensor.getValor())
+                            dbConnector.updateMaxMinOnSesor(dados_sensor.getId_sensor(), dados_sensor.getValor(), true);
+                        else if (lista_sensores.get(dados_sensor.getId_sensor() - 1).getMin() > dados_sensor.getValor())
+                            dbConnector.updateMaxMinOnSesor(dados_sensor.getId_sensor(), dados_sensor.getValor(), false);
+                    }
+                    /*for (Sensor sensor : lista_sensores){
+                        if (sensor.getId() == dados_sensor.getId_sensor() && sensor.getMax()< dados_sensor.getValor())
+                            dbConnector.updateMaxMinOnSesor(sensor.getId(),dados_sensor.getValor(),true);
+                        else if (sensor.getId() == dados_sensor.getId_sensor() && sensor.getMin()< dados_sensor.getValor())
+                            dbConnector.updateMaxMinOnSesor(sensor.getId(),dados_sensor.getValor(),false);
+                    }*/
+
                     dbConnector.insereSensorData(dados_sensor);
                 }
             }
-        }catch(WakeupException ex){
+        } catch (WakeupException ex) {
             System.out.println("Exception caught " + ex.getMessage());
-        } finally{
+        } finally {
             consumer.close();
             System.out.println("After closing KafkaConsumer");
         }
