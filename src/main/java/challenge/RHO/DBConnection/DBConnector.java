@@ -20,6 +20,7 @@ public class DBConnector {
     private StringBuffer sqlQuery1 = null;
     private Statement st = null;
     private static ResultSet rs = null;
+    private static ResultSet rs2 = null;
 
     private static boolean connected;
 
@@ -166,7 +167,7 @@ public class DBConnector {
         }
     }
 
-    public ArrayList<Sensor> selectallSensors() {
+    public static ArrayList<Sensor> selectallSensors() {
         if (isConnected()) {
             ArrayList<Sensor> arraySensors = new ArrayList<>();
 
@@ -282,6 +283,68 @@ public class DBConnector {
             }
         } else {
             System.out.println("!! Database not initialised !!\nUnable to select new employer.");
+        }
+    }
+
+    public static Sensor retorna_entre_datas(int id_sensor,Date datainicio, Date datafim,Time horainicio,Time horafim) {
+        if (isConnected()) {
+            Sensor sensor_retorna = new Sensor();
+            String query = "SELECT * FROM sensor WHERE id = ?;";
+            String query2 = null;
+            if (horainicio == null && horafim == null)
+                query2 = "SELECT * FROM sensordata WHERE id_sensor = ? AND regist_date >= ? AND regist_date <= ? ORDER BY id ASC;";
+            else if (horainicio != null && horafim != null)
+                query2 =  "SELECT * FROM sensordata WHERE id_sensor = ? AND (regist_date >= ? AND regist_date <= ? ) AND (regist_time > ? AND regist_time < ?) ORDER BY id ASC";
+
+            try {
+                rs = null;
+                PreparedStatement statement = conn.prepareStatement(query);
+                statement.setInt(1, id_sensor);
+
+                rs = statement.executeQuery();
+                while (rs.next()) {
+                    sensor_retorna.setId(rs.getInt("id"));
+                    sensor_retorna.setName(rs.getString("name"));
+                    sensor_retorna.setInstall_date(rs.getDate("install_date"));
+                    sensor_retorna.setInstall_time(rs.getTime("install_time"));
+                    sensor_retorna.setLatitude(rs.getDouble("latitude"));
+                    sensor_retorna.setLongitude(rs.getDouble("longitude"));
+                    sensor_retorna.setMax(rs.getDouble("max"));
+                    sensor_retorna.setMin(rs.getDouble("min"));
+
+                }
+                rs2 = null;
+                PreparedStatement statement2 = conn.prepareStatement(query2);
+                statement2.setInt(1, id_sensor);
+                statement2.setDate(2, datainicio);
+                statement2.setDate(3, datafim);
+                if(horainicio != null && horafim != null) {
+                    statement2.setTime(4, horainicio);
+                    statement2.setTime(5, horafim);
+                }
+                ArrayList<SensorData> dados_sensor_data = new ArrayList<SensorData>();
+
+                rs2 = statement2.executeQuery();
+                while (rs2.next()) {
+                    SensorData sensordata = new SensorData();
+                    sensordata.setId(rs2.getInt("id"));
+                    sensordata.setId_sensor(rs2.getInt("id_sensor"));
+                    sensordata.setValor(rs2.getDouble("valor"));
+                    sensordata.setRegist_date(rs2.getDate("regist_date"));
+                    sensordata.setRegist_time(rs2.getTime("regist_time"));
+
+                    dados_sensor_data.add(sensordata);
+                }
+                //atribuir os dados do SensorData
+                sensor_retorna.setDados(dados_sensor_data);
+                return sensor_retorna;
+            } catch (SQLException e) {
+                System.out.println("!! SQL Exception !!\n" + e);
+                return null;
+            }
+        } else {
+            System.out.println("!! Database not initialised !!\nUnable to select new employer.");
+            return null;
         }
     }
 
