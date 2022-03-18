@@ -4,6 +4,7 @@ import challenge.RHO.DBConnection.DBConnector;
 import challenge.RHO.Model.Sensor;
 import challenge.RHO.Model.SensorData;
 import challenge.RHO.Serializer.JSONDeserializerTest;
+import challenge.RHO.Utils.Recetora;
 import challenge.RHO.Utils.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -28,7 +29,7 @@ public class RhoApplication {
 
     public static ArrayList<Sensor> lista_sensores = new ArrayList<>();
 
-    private static DBConnector dbConnector = null;
+    public static DBConnector dbConnector = null;
 
     public static void main(String[] args) {
 
@@ -65,6 +66,19 @@ public class RhoApplication {
         //aqui vai criar a lista de sensores (ir buscar à BD)
         //lista_sensores.add(new Sensor(1,"Sensor 1",new Date(System.currentTimeMillis()),2.222,1.1111,0,0,null));
 
+        //achava que funcionada ao ter 1 thread para cada sensor, atraves da distinção do partition
+        /*Thread[] dispatchers = new Thread[3];
+        for (int i = 1; i <= 3; i++) {
+            dispatchers[i - 1] = new Thread(new Recetora(new KafkaConsumer<String, SensorData>(props), "testeSensorData", i));
+            dispatchers[i - 1].start();
+        }
+        try {
+            for (Thread t : dispatchers)
+                t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+
         KafkaConsumer<String, SensorData> consumer = new KafkaConsumer<String, SensorData>(props);
         consumer.subscribe(Arrays.asList("testeSensorData"));
         ObjectMapper mapper = new ObjectMapper();
@@ -74,21 +88,29 @@ public class RhoApplication {
             while (true) {
                 ConsumerRecords<String, SensorData> records = consumer.poll(Duration.ofMillis(100));
                 for (ConsumerRecord<String, SensorData> record : records) {
-                    //int record_key = Integer.parseInt(record.key());
+                    int record_key = Integer.parseInt(record.key());
                     SensorData dados_sensor = record.value();
 
-                    if (lista_sensores.get(dados_sensor.getId_sensor() - 1).getId() == dados_sensor.getId_sensor()) {
+                    if (lista_sensores.get(record_key - 1).getId() == record_key) {
+                        if (lista_sensores.get(record_key - 1).getMax() < dados_sensor.getValor())
+                            dbConnector.updateMaxMinOnSesor(record_key, dados_sensor.getValor(), true);
+                        else if (lista_sensores.get(record_key - 1).getMin() > dados_sensor.getValor())
+                            dbConnector.updateMaxMinOnSesor(record_key, dados_sensor.getValor(), false);
+                    }
+
+                    /*if (lista_sensores.get(dados_sensor.getId_sensor() - 1).getId() == dados_sensor.getId_sensor()) {
                         if (lista_sensores.get(dados_sensor.getId_sensor() - 1).getMax() < dados_sensor.getValor())
                             dbConnector.updateMaxMinOnSesor(dados_sensor.getId_sensor(), dados_sensor.getValor(), true);
                         else if (lista_sensores.get(dados_sensor.getId_sensor() - 1).getMin() > dados_sensor.getValor())
                             dbConnector.updateMaxMinOnSesor(dados_sensor.getId_sensor(), dados_sensor.getValor(), false);
-                    }
-                    /*for (Sensor sensor : lista_sensores){
-                        if (sensor.getId() == dados_sensor.getId_sensor() && sensor.getMax()< dados_sensor.getValor())
-                            dbConnector.updateMaxMinOnSesor(sensor.getId(),dados_sensor.getValor(),true);
-                        else if (sensor.getId() == dados_sensor.getId_sensor() && sensor.getMin()< dados_sensor.getValor())
-                            dbConnector.updateMaxMinOnSesor(sensor.getId(),dados_sensor.getValor(),false);
                     }*/
+
+                    //for (Sensor sensor : lista_sensores){
+                    //    if (sensor.getId() == dados_sensor.getId_sensor() && sensor.getMax()< dados_sensor.getValor())
+                    //        dbConnector.updateMaxMinOnSesor(sensor.getId(),dados_sensor.getValor(),true);
+                    //    else if (sensor.getId() == dados_sensor.getId_sensor() && sensor.getMin()< dados_sensor.getValor())
+                    //        dbConnector.updateMaxMinOnSesor(sensor.getId(),dados_sensor.getValor(),false);
+                    //}
 
                     dbConnector.insereSensorData(dados_sensor);
                 }
