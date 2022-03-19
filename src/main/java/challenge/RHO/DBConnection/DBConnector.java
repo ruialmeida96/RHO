@@ -81,6 +81,29 @@ public class DBConnector {
         return connected;
     }
 
+    public void create_database(){
+        try{
+            String query = "CREATE TABLE sensor (\n" +
+                    "  id int NOT NULL AUTO_INCREMENT,\n" +
+                    "  name varchar(255) NOT NULL,\n" +
+                    "  install_date date NOT NULL,\n" +
+                    "  latitude double NOT NULL,\n" +
+                    "  longitude double NOT NULL,\n" +
+                    "  max double NOT NULL DEFAULT '0',\n" +
+                    "  min double NOT NULL DEFAULT '100',\n" +
+                    "  install_time time NOT NULL,\n" +
+                    "  PRIMARY KEY (id)\n" +
+                    ")";
+
+            PreparedStatement statement = conn.prepareStatement(query);
+
+            statement.execute();
+        } catch (SQLException e) {
+            System.out.println("!! SQL Exception !!\n" + e);
+        }
+    }
+
+
     public boolean insereSensor(Sensor _data) {
         if (isConnected()) {
             try {
