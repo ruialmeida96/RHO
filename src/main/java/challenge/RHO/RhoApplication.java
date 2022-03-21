@@ -35,11 +35,14 @@ public class RhoApplication {
 
         SpringApplication.run(RhoApplication.class, args);
 
-        dbConnector = new DBConnector("jdbc:mysql://localhost:3306/sys", "root", "root");
+        dbConnector = new DBConnector("jdbc:mysql://127.0.0.1:3306/sys", "root", "root");
 
         dbConnector.ConnectDataBase();
         boolean con = dbConnector.isConnected();
         System.out.println("DB is connected ? -->" + con);
+
+        //criar database se ela não existir
+        dbConnector.create_database();
 
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");

@@ -2,8 +2,6 @@ package challenge.RHO.DBConnection;
 
 import challenge.RHO.Model.Sensor;
 import challenge.RHO.Model.SensorData;
-import com.mysql.cj.jdbc.CallableStatementWrapper;
-import com.mysql.cj.x.protobuf.MysqlxPrepare;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -83,21 +81,34 @@ public class DBConnector {
 
     public void create_database(){
         try{
-            String query = "CREATE TABLE sensor (\n" +
+            String query = "CREATE TABLE IF NOT EXISTS sensor (\n" +
                     "  id int NOT NULL AUTO_INCREMENT,\n" +
                     "  name varchar(255) NOT NULL,\n" +
                     "  install_date date NOT NULL,\n" +
                     "  latitude double NOT NULL,\n" +
                     "  longitude double NOT NULL,\n" +
                     "  max double NOT NULL DEFAULT '0',\n" +
-                    "  min double NOT NULL DEFAULT '100',\n" +
+                    "  min double NOT NULL DEFAULT '50',\n" +
                     "  install_time time NOT NULL,\n" +
                     "  PRIMARY KEY (id)\n" +
-                    ")";
+                    ");";
+
+            String query2 = "CREATE TABLE IF NOT EXISTS sensordata (\n" +
+                    "  id int NOT NULL AUTO_INCREMENT,\n" +
+                    "  id_sensor int NOT NULL,\n" +
+                    "  valor double NOT NULL,\n" +
+                    "  regist_date date NOT NULL,\n" +
+                    "  regist_time time NOT NULL,\n" +
+                    "  PRIMARY KEY (id),\n" +
+                    "  KEY id_sensor_idx (id_sensor),\n" +
+                    "  FOREIGN KEY (id_sensor) REFERENCES sensor (id)\n" +
+                    ");";
 
             PreparedStatement statement = conn.prepareStatement(query);
+            PreparedStatement statement2 = conn.prepareStatement(query2);
 
             statement.execute();
+            statement2.execute();
         } catch (SQLException e) {
             System.out.println("!! SQL Exception !!\n" + e);
         }
