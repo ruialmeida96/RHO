@@ -26,34 +26,6 @@ public class SensorAPI {
 
     }
 
-    /*@GetMapping("/random")
-    public Sensor ola() {
-
-        Vector<SensorData> vetorteste = new Vector<SensorData>();
-        vetorteste.add(new SensorData(1,2.222222));
-        vetorteste.add(new SensorData(2,333.332));
-        vetorteste.add(new SensorData(3,4.222222));
-        vetorteste.add(new SensorData(4,5.222222));
-
-        return new Sensor(1, "nome", new Date(System.currentTimeMillis()), 1.111111, 2.323234234,1,2,vetorteste);
-    }*/
-
-    /*@GetMapping("/sensores")
-    public ArrayList<Sensor> return_sensores(){
-        return array_sensores;
-    }*/
-
-    /*@GetMapping("/sensor")
-    public Sensor return_sensor_by_id(@RequestParam(name = "id") int id){
-        if (id >0){
-            for (Sensor _sensor : array_sensores){
-                if(_sensor.getId() == id)
-                    return _sensor;
-            }
-        }
-        return null;
-    }*/
-
     @GetMapping(value = "/sensores",produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayList<Sensor> return_sensores() {
         return DBConnector.selectallSensors();

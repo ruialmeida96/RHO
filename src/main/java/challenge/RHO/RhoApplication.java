@@ -36,7 +36,6 @@ public class RhoApplication {
         SpringApplication.run(RhoApplication.class, args);
 
         dbConnector = new DBConnector("jdbc:mysql://127.0.0.1:3306/sys", "root", "root");
-        //dbConnector = new DBConnector("jdbc:mysql://172.0.0.1:3306/sys", "root", "root");
 
         dbConnector.ConnectDataBase();
         boolean con = dbConnector.isConnected();
@@ -67,10 +66,7 @@ public class RhoApplication {
             lista_sensores = dbConnector.selectallSensors();
         }
 
-        //aqui vai criar a lista de sensores (ir buscar à BD)
-        //lista_sensores.add(new Sensor(1,"Sensor 1",new Date(System.currentTimeMillis()),2.222,1.1111,0,0,null));
-
-        //achava que funcionada ao ter 1 thread para cada sensor, atraves da distinção do partition
+        //achava que funcionava ao ter 1 thread para cada sensor, atraves da distinção do partition
         /*Thread[] dispatchers = new Thread[3];
         for (int i = 1; i <= 3; i++) {
             dispatchers[i - 1] = new Thread(new Recetora(new KafkaConsumer<String, SensorData>(props), "testeSensorData", i));
