@@ -36,6 +36,7 @@ public class RhoApplication {
         SpringApplication.run(RhoApplication.class, args);
 
         dbConnector = new DBConnector("jdbc:mysql://127.0.0.1:3306/sys", "root", "root");
+        //dbConnector = new DBConnector("jdbc:mysql://172.0.0.1:3306/sys", "root", "root");
 
         dbConnector.ConnectDataBase();
         boolean con = dbConnector.isConnected();
@@ -57,7 +58,7 @@ public class RhoApplication {
         //INSERIR DADOS DE SENSORES POR DEFEITO CASO NAO TENHA VALORES NOS SENSORES (criamos pelomenos 3 sensores)
         if (total_sensors == 0) {
             for (int i = 1; i <= 3; i++) {
-                Sensor insere_sensor = new Sensor("Sensor " + i, Utils.return_current_date(), Utils.return_current_time(), 40.714 + i, -74.006 + i, 0, 0, null);
+                Sensor insere_sensor = new Sensor("Sensor " + i, Utils.return_current_date(), Utils.return_current_time(), 40.714 + i, -74.006 + i, 25, 0, null);
                 dbConnector.insereSensor(insere_sensor);
                 lista_sensores.add(insere_sensor);
             }
