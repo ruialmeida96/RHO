@@ -35,7 +35,7 @@ public class RhoApplication {
 
         SpringApplication.run(RhoApplication.class, args);
 
-        dbConnector = new DBConnector("jdbc:mysql://127.0.0.1:3306/sys", "root", "root");
+        dbConnector = new DBConnector("jdbc:mysql://172.0.0.1:3306/sys", "root", "root");
 
         dbConnector.ConnectDataBase();
         boolean con = dbConnector.isConnected();
@@ -45,7 +45,7 @@ public class RhoApplication {
         dbConnector.create_database();
 
         Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.0.0.3:9092");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JSONDeserializerTest.class);
         props.put(JSONDeserializerTest.VALUE_CLASS_NAME_CONFIG, SensorData.class);
