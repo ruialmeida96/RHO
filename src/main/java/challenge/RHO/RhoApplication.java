@@ -35,8 +35,10 @@ public class RhoApplication {
 
         SpringApplication.run(RhoApplication.class, args);
 
-        dbConnector = new DBConnector("jdbc:mysql://172.0.0.1:3306/sys", "root", "root");
+        //dbConnector = new DBConnector("jdbc:mysql://172.0.0.1:3306/sys", "root", "root");
+        dbConnector = new DBConnector("jdbc:mysql://localhost:3306/sys", "root", "root");
 
+        //inicializar conexão com a DB
         dbConnector.ConnectDataBase();
         boolean con = dbConnector.isConnected();
         System.out.println("DB is connected ? -->" + con);
@@ -44,15 +46,16 @@ public class RhoApplication {
         //criar database se ela não existir
         dbConnector.create_database();
 
+
         Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "172.0.0.3:9092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JSONDeserializerTest.class);
         props.put(JSONDeserializerTest.VALUE_CLASS_NAME_CONFIG, SensorData.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "SensorDataConsumerGroup");
         //props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest");
 
-
+        //obter o total de sensores
         int total_sensors = dbConnector.selectCountSensors();
         //INSERIR DADOS DE SENSORES POR DEFEITO CASO NAO TENHA VALORES NOS SENSORES (criamos pelomenos 3 sensores)
         if (total_sensors == 0) {
@@ -62,11 +65,11 @@ public class RhoApplication {
                 lista_sensores.add(insere_sensor);
             }
         } else {
-            //carregar os valores da BD
+            //obter os valores da BD
             lista_sensores = dbConnector.selectallSensors();
         }
 
-        //achava que funcionava ao ter 1 thread para cada sensor, atraves da distinção do partition
+        //Tentativa de criar uma Thread para cada sensor, atraves da distinção do partition
         /*Thread[] dispatchers = new Thread[3];
         for (int i = 1; i <= 3; i++) {
             dispatchers[i - 1] = new Thread(new Recetora(new KafkaConsumer<String, SensorData>(props), "testeSensorData", i));
@@ -79,11 +82,12 @@ public class RhoApplication {
             e.printStackTrace();
         }*/
 
+        //inicializar o subscritor do Kafka
         KafkaConsumer<String, SensorData> consumer = new KafkaConsumer<String, SensorData>(props);
         consumer.subscribe(Arrays.asList("testeSensorData"));
-        ObjectMapper mapper = new ObjectMapper();
+        //ObjectMapper mapper = new ObjectMapper();
 
-        //Start processing messages
+        //Processar mensagens
         try {
             while (true) {
                 ConsumerRecords<String, SensorData> records = consumer.poll(Duration.ofMillis(100));
@@ -91,11 +95,16 @@ public class RhoApplication {
                     int record_key = Integer.parseInt(record.key());
                     SensorData dados_sensor = record.value();
 
+                    //para o valor X, se estiver na posição correta no Array, verificar MAX e MIN
                     if (lista_sensores.get(record_key - 1).getId() == record_key) {
-                        if (lista_sensores.get(record_key - 1).getMax() < dados_sensor.getValor())
+                        if (lista_sensores.get(record_key - 1).getMax() < dados_sensor.getValor()){
                             dbConnector.updateMaxMinOnSesor(record_key, dados_sensor.getValor(), true);
-                        else if (lista_sensores.get(record_key - 1).getMin() > dados_sensor.getValor())
+                            lista_sensores.get(record_key - 1).setMax(dados_sensor.getValor());
+                        }
+                        if (lista_sensores.get(record_key - 1).getMin() > dados_sensor.getValor()){
                             dbConnector.updateMaxMinOnSesor(record_key, dados_sensor.getValor(), false);
+                            lista_sensores.get(record_key - 1).setMin(dados_sensor.getValor());
+                        }
                     }
 
                     /*if (lista_sensores.get(dados_sensor.getId_sensor() - 1).getId() == dados_sensor.getId_sensor()) {
@@ -116,10 +125,10 @@ public class RhoApplication {
                 }
             }
         } catch (WakeupException ex) {
-            System.out.println("Exception caught " + ex.getMessage());
+            System.out.println("Exception caught -->" + ex.getMessage());
         } finally {
             consumer.close();
-            System.out.println("After closing KafkaConsumer");
+            System.out.println("Kafka Consumer fechado!");
         }
     }
 }

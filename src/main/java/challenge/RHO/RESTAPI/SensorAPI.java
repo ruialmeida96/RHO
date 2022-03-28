@@ -1,21 +1,16 @@
 package challenge.RHO.RESTAPI;
 
 import challenge.RHO.DBConnection.DBConnector;
-import challenge.RHO.Utils.Utils;
-import jdk.jshell.execution.Util;
-import org.springframework.format.annotation.DateTimeFormat;
+import challenge.RHO.Model.Sensor;
+import challenge.RHO.Model.SensorData;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import challenge.RHO.Model.Sensor;
-import challenge.RHO.Model.SensorData;
 
-import javax.print.attribute.standard.Media;
-import java.util.ArrayList;
 import java.sql.Date;
 import java.sql.Time;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import static challenge.RHO.RhoApplication.lista_sensores;
 

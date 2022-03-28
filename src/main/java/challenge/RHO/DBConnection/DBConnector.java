@@ -14,8 +14,6 @@ public class DBConnector {
     //private String dbDriver = "com.mysql.jdbc.Driver";
 
     private static Connection conn = null;
-    private StringBuffer sqlQuery = null;
-    private StringBuffer sqlQuery1 = null;
     private Statement st = null;
     private static ResultSet rs = null;
     private static ResultSet rs2 = null;

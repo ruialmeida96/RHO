@@ -29,12 +29,11 @@ public class Recetora implements Runnable{
     @Override
     public void run() {
         System.out.println("THREAD STARTING -->" + partition);
-        //consumer.subscribe(Arrays.asList("testeSensorData"));
         TopicPartition topicPartition = new TopicPartition(topic, partition);
         consumer.assign(Arrays.asList(topicPartition));
-        ObjectMapper mapper = new ObjectMapper();
 
-        //Start processing messages
+        //inicializar o subscritor do Kafka
+        //Está desatualizada
         try {
             while (true) {
                 ConsumerRecords<String, SensorData> records = consumer.poll(Duration.ofMillis(100));
